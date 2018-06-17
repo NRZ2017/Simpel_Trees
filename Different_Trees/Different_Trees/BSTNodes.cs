@@ -6,7 +6,16 @@ using System.Threading.Tasks;
 
 namespace Different_Trees
 {
-    class BSTNodes
+    class BSTNodes<T>
     {
+        public T Data;
+        public BSTNodes<T> LeftChild;
+        public BSTNodes<T> RightChild;
+        public BSTNodes<T> Parent;
+
+        public BSTNodes(T data)
+        {
+            Data = data;
+        }
     }
 }

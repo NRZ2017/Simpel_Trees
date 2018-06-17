@@ -10,6 +10,11 @@ namespace Different_Trees
     {
         static void Main(string[] args)
         {
+            BST<int> bst = new BST<int>();
+
+            bst.Insert(10);
+            bst.Insert(20);
+            bst.Insert(14);
         }
     }
 }
