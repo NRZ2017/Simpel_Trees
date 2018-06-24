@@ -29,7 +29,7 @@ namespace Different_Trees
                 }
             }
         }
-
+        /*
         public void Insert(T value)
         {
             
@@ -42,40 +42,50 @@ namespace Different_Trees
             {
                 BSTNodes<T> tempNode = Root;
                 BSTNodes<T> parentNode = Root.Parent;
-                while(tempNode != null)
+                while (tempNode != null)
                 {
                     // if the value is less than the current node...
                     if (value.CompareTo(tempNode.Data) < 0)
                     {
-                        // and if there's a left child...
-                        // go down the left child
-                        if (tempNode.LeftChild == null)
-                        {
-                            if (value.CompareTo(tempNode.Data) >= 0)
-                            {
-                                tempNode = tempNode.LeftChild;
-                            }
-                            else if (value.CompareTo(tempNode.Data) < 0)
-                            {
-                                tempNode.LeftChild = new BSTNodes<T>(value);
-                            }
-                        }
+                        tempNode = tempNode.LeftChild;
+                        parentNode = tempNode;
+                        tempNode = parentNode.LeftChild;
                     }
+                    else if (value.CompareTo(tempNode.Data) < 0)
+                    {
+                        tempNode.LeftChild = new BSTNodes<T>(value);
+                        parentNode = tempNode;
+                        tempNode = null;
+                    }
+                    // and if there's a left child...
+                    // go down the left child
+                    if (tempNode.LeftChild == null)
+                    {
+                        parentNode.LeftChild = tempNode;
+                        parentNode.Parent = parentNode;
+                    }
+                
+
 
                     else
                     {
                         if (value.CompareTo(tempNode.Data) >= 0)
                         {
-                             if (tempNode.RightChild == null)
-                            {
-                                if (value.CompareTo(tempNode.Data) <= 0)
+                            if (value.CompareTo(tempNode.Data) <= 0)
                                 {
                                     tempNode = tempNode.RightChild;
+                                     parentNode = tempNode;
                                 }
                                 else if (value.CompareTo(tempNode.Data) > 0)
                                 {
                                     tempNode.RightChild = new BSTNodes<T>(value);
+
                                 }
+                            if (tempNode.RightChild == null)
+                            {
+                                parentNode.RightChild = tempNode;
+                                parentNode = tempNode;
+                                parentNode.Parent = parentNode;
                             }
 
                                         
@@ -91,10 +101,70 @@ namespace Different_Trees
             }
 
         }
-
+        */
         void Delete(T value)
         {
             throw new NotImplementedException();
+        }
+
+
+
+
+
+
+
+        public void Insert(T value)
+        {
+            if (Root == null)
+            {
+                Root = new BSTNodes<T>(value);
+                IsEmpty = false;
+            }
+            BSTNodes<T> tempNode = Root;
+            BSTNodes<T> parentNode = Root.Parent;
+
+            while (tempNode != null)
+            {
+                if (value.CompareTo(tempNode.Data) < 0)
+                {
+                    //parentNode = tempNode;
+                    tempNode = tempNode.LeftChild;
+                }
+                if (value.CompareTo(tempNode.Data) >= 0)
+                {
+                    //parentNode = tempNode;
+                    tempNode = tempNode.RightChild;
+                }
+                /*
+                else
+                {
+                    parentNode = tempNode;
+                    tempNode = tempNode.RightChild;
+                }
+                */
+                if (tempNode == null)
+                {
+                    // set tempNode to a new BSTNode
+                    // parentNode = tempNode;
+                    tempNode = tempNode.LeftChild;
+                    tempNode.Parent = parentNode;
+                }
+                tempNode = new BSTNodes<T>(value);
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
     }
 }
