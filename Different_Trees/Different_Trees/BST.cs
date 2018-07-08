@@ -8,161 +8,148 @@ namespace Different_Trees
 {
     class BST<T> where T : IComparable<T>
     {
-        bool IsEmpty = true;
+        public int Count { get; private set; }
+
+        public bool IsEmpty
+        {
+            get
+            {
+                return Count == 0;
+            }
+        }
 
         BSTNodes<T> Root;
-        bool IsRightChild = true;
-        bool IsLeftChild = true;
 
-        public void Search(T key)
+
+        public bool Contains(T key)
         {
             BSTNodes<T> current = Root;
             while (current != null)
             {
-                if (key.CompareTo(current.Data) == -1)
+                if (key.CompareTo(current.Data) < 0)
                 {
                     current = current.LeftChild;
                 }
-                else
+                else if (key.CompareTo(current.Data) > 0)
                 {
                     current = current.RightChild;
                 }
+                else
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool Delete(T value)
+        {
+            BSTNodes<T> tempnode = Root;
+            while (tempnode != null)
+            {
+                if (value.CompareTo(tempnode.Data) < 0)
+                {
+                    tempnode = tempnode.LeftChild;
+                }
+                else if (value.CompareTo(tempnode.Data) > 0)
+                {
+                    tempnode = tempnode.RightChild;
+                }
+                else
+                {
+                    RemoveNode(tempnode);
+                    Count--;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void RemoveNode(BSTNodes<T> node)
+        {
+            if (node.ChildCount == 0)
+            {
+                //remove parent pointer to us
+                if (node.Parent.LeftChild == node)
+                {
+                    node.Parent.LeftChild = null;
+                }
+                else
+                {
+                    node.Parent.RightChild = null;
+                }
+            }
+            else if (node.ChildCount == 1)
+            {
+                //link parent and child 
+                var child = node.FirstChild;
+                child.Parent = node.Parent;
+                if (node.Parent.LeftChild == node)
+                {
+                    node.Parent.LeftChild = child;
+                }
+                else
+                {
+                    node.Parent.RightChild = child;
+                }
+            }
+            else if (node.ChildCount == 2)
+            {
+                //find prime node: left once, all the way right
+                //copy prime nodes value into temp value
+                //recursive delete prime node (non-recursive: make another function)
+                var primeNode = node.LeftChild;
+                while (primeNode.RightChild != null)
+                {
+                    primeNode = primeNode.RightChild;
+                }
+                node.Data = primeNode.Data;
+                RemoveNode(primeNode);
             }
         }
-        /*
+
+
         public void Insert(T value)
         {
-            
+            Count++;
             if (Root == null)
             {
                 Root = new BSTNodes<T>(value);
-                IsEmpty = false;
             }
             else
             {
                 BSTNodes<T> tempNode = Root;
-                BSTNodes<T> parentNode = Root.Parent;
+
                 while (tempNode != null)
                 {
-                    // if the value is less than the current node...
                     if (value.CompareTo(tempNode.Data) < 0)
                     {
-                        tempNode = tempNode.LeftChild;
-                        parentNode = tempNode;
-                        tempNode = parentNode.LeftChild;
-                    }
-                    else if (value.CompareTo(tempNode.Data) < 0)
-                    {
-                        tempNode.LeftChild = new BSTNodes<T>(value);
-                        parentNode = tempNode;
-                        tempNode = null;
-                    }
-                    // and if there's a left child...
-                    // go down the left child
-                    if (tempNode.LeftChild == null)
-                    {
-                        parentNode.LeftChild = tempNode;
-                        parentNode.Parent = parentNode;
-                    }
-                
-
-
-                    else
-                    {
-                        if (value.CompareTo(tempNode.Data) >= 0)
+                        if (tempNode.LeftChild != null)
                         {
-                            if (value.CompareTo(tempNode.Data) <= 0)
-                                {
-                                    tempNode = tempNode.RightChild;
-                                     parentNode = tempNode;
-                                }
-                                else if (value.CompareTo(tempNode.Data) > 0)
-                                {
-                                    tempNode.RightChild = new BSTNodes<T>(value);
-
-                                }
-                            if (tempNode.RightChild == null)
-                            {
-                                parentNode.RightChild = tempNode;
-                                parentNode = tempNode;
-                                parentNode.Parent = parentNode;
-                            }
-
-                                        
+                            tempNode = tempNode.LeftChild;
                         }
-                        
+                        else
+                        {
+                            //add a left child
+                            tempNode.LeftChild = new BSTNodes<T>(value, tempNode);
+                            break;
+                        }
                     }
-                    // otherwise if the value is greater than or equal to the current node
-                    // and if there's a right child...
-                    // go down the right child
+                    else if (value.CompareTo(tempNode.Data) >= 0)
+                    {
+                        if (tempNode.RightChild != null)
+                        {
+                            tempNode = tempNode.RightChild;
+                        }
+                        else
+                        {
+                            tempNode.RightChild = new BSTNodes<T>(value, tempNode);
+                            break;
+                        }
+                    }
                 }
-                
-
             }
-
-        }
-        */
-        void Delete(T value)
-        {
-            throw new NotImplementedException();
-        }
-
-
-
-
-
-
-
-        public void Insert(T value)
-        {
-            if (Root == null)
-            {
-                Root = new BSTNodes<T>(value);
-                IsEmpty = false;
-            }
-            BSTNodes<T> tempNode = Root;
-            BSTNodes<T> parentNode = Root.Parent;
-
-            while (tempNode != null)
-            {
-                if (value.CompareTo(tempNode.Data) < 0)
-                {
-                    //parentNode = tempNode;
-                    tempNode = tempNode.LeftChild;
-                }
-                if (value.CompareTo(tempNode.Data) >= 0)
-                {
-                    //parentNode = tempNode;
-                    tempNode = tempNode.RightChild;
-                }
-                /*
-                else
-                {
-                    parentNode = tempNode;
-                    tempNode = tempNode.RightChild;
-                }
-                */
-                if (tempNode == null)
-                {
-                    // set tempNode to a new BSTNode
-                    // parentNode = tempNode;
-                    tempNode = tempNode.LeftChild;
-                    tempNode.Parent = parentNode;
-                }
-                tempNode = new BSTNodes<T>(value);
-            }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         }
